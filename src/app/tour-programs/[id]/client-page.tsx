@@ -21,12 +21,13 @@ import {
     updateTourIncomeItem,
     deleteTourIncomeItem,
     updateTourProgram,
+    getTourProgram,
 } from '@/services/tourProgramService';
 import type { TourCostItem, TourIncomeItem, TourProgram, Currency } from '@/lib/types';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from 'date-fns';
-import { lo } from 'date-fns/locale/lo';
+import { lo } from 'date-fns/locale';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox";
@@ -269,7 +270,13 @@ const CurrencyInput = ({ label, amount, currency, onAmountChange, onCurrencyChan
 type TabValue = 'info' | 'income' | 'costs' | 'summary' | 'dividend';
 type DividendItem = { id: string; name: string; percentage: number };
 
-export default function TourProgramClientPage({ initialProgram }: { initialProgram: TourProgram }) {
+
+interface Props {
+    initialProgram: TourProgram | null;
+    programId: string;
+}
+
+export default function TourProgramClientPage({ initialProgram, programId }: Props) {
     const { toast } = useToast();
     
     const [localProgram, setLocalProgram] = useState<TourProgram | null>(initialProgram);
@@ -286,12 +293,11 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!initialProgram && localProgram?.id) {
+        if (!initialProgram && programId) {
              setLoading(true);
              const fetchProgram = async () => {
                  try {
-                    // This is a placeholder, in a real app you'd fetch from your service
-                    const fetchedProgram = await new Promise<TourProgram | null>((resolve) => setTimeout(() => resolve(initialProgram), 1000));
+                    const fetchedProgram = await getTourProgram(programId);
                     if (fetchedProgram) {
                         setLocalProgram(fetchedProgram);
                     } else {
@@ -304,12 +310,8 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
                  }
              }
              fetchProgram();
-        } else {
-            setLocalProgram(initialProgram);
-            setLoading(false);
         }
-
-    }, [initialProgram, localProgram?.id]);
+    }, [initialProgram, programId]);
 
 
     useEffect(() => {
@@ -875,3 +877,5 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
     </div>
   )
 }
+
+    
