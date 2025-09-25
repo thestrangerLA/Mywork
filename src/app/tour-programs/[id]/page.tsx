@@ -16,7 +16,7 @@ export async function generateStaticParams() {
   } catch (error) {
     console.error("Failed to generate static params:", error);
     // Return a default or empty array to prevent build failure
-    return [{ id: 'default' }];
+    return [];
   }
 }
 
@@ -51,14 +51,6 @@ export default async function TourProgramPage({
 }) {
   const { id } = params;
   
-  if (id === 'default') {
-      return (
-            <div className="flex justify-center items-center h-screen">
-               <p>This is a default placeholder page. No programs found.</p>
-           </div>
-      )
-  }
-
   // Fetch initial data on the server. The client component will re-fetch if needed.
   // This helps with initial page load performance and SEO.
   const program = await getTourProgram(id);
@@ -74,4 +66,5 @@ export default async function TourProgramPage({
   return <TourProgramClientPage initialProgram={program} programId={id} />;
 }
 
+    
     
