@@ -137,7 +137,6 @@ const CurrencyEntryTable = ({
                                                     selected={item.date || undefined}
                                                     onSelect={(date) => handleBlur(item.id, 'date', date || new Date())}
                                                     initialFocus
-                                                    
                                                 />
                                             </PopoverContent>
                                         </Popover>
@@ -877,4 +876,5 @@ export default function TourProgramClientPage({ initialProgram, programId }: Pro
   )
 }
 
+    
     
