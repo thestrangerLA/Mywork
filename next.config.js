@@ -6,8 +6,6 @@ const nextConfig = {
   images: {
     unoptimized: true
   },
-  basePath: '/tour-programs',
-  assetPrefix: '/tour-programs/',
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
