@@ -22,7 +22,7 @@ export default function TeeWorkPage() {
       </header>
       <main className="flex flex-1 flex-col items-center justify-center gap-8 p-4">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl">
-          <Link href="/agriculture">
+          <Link href="/agriculture/">
             <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-2xl font-bold font-headline">ທຸລະກິດກະສິກຳ</CardTitle>
@@ -35,7 +35,7 @@ export default function TeeWorkPage() {
               </CardContent>
             </Card>
           </Link>
-           <Link href="/documents">
+           <Link href="/documents/">
             <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-2xl font-bold font-headline">ທຸລະກິດ ເອກະສານ</CardTitle>
