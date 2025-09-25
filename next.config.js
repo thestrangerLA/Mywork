@@ -2,6 +2,7 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/Mywork',
   trailingSlash: true,
   images: {
     unoptimized: true

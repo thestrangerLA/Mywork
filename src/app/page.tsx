@@ -14,7 +14,7 @@ export default function Home() {
       </header>
       <main className="flex flex-1 flex-col items-center justify-center gap-8 p-4">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl">
-          <Link href="/tour">
+          <Link href="/tour/">
             <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-2xl font-bold font-headline">ທຸລະກິດທ່ອງທ່ຽວ</CardTitle>
@@ -27,7 +27,7 @@ export default function Home() {
               </CardContent>
             </Card>
           </Link>
-          <Link href="/tee-work">
+          <Link href="/tee-work/">
             <Card className="hover:shadow-lg transition-shadow duration-300 cursor-pointer h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-2xl font-bold font-headline">Tee's WORK</CardTitle>
