@@ -21,12 +21,12 @@ import {
     updateTourIncomeItem,
     deleteTourIncomeItem,
     updateTourProgram,
+    getTourProgram,
 } from '@/services/tourProgramService';
 import type { TourCostItem, TourIncomeItem, TourProgram, Currency } from '@/lib/types';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from 'date-fns';
-import { lo } from 'date-fns/locale';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox";
@@ -137,7 +137,6 @@ const CurrencyEntryTable = ({
                                                     selected={item.date || undefined}
                                                     onSelect={(date) => handleBlur(item.id, 'date', date || new Date())}
                                                     initialFocus
-                                                    
                                                 />
                                             </PopoverContent>
                                         </Popover>
@@ -269,7 +268,13 @@ const CurrencyInput = ({ label, amount, currency, onAmountChange, onCurrencyChan
 type TabValue = 'info' | 'income' | 'costs' | 'summary' | 'dividend';
 type DividendItem = { id: string; name: string; percentage: number };
 
-export default function TourProgramClientPage({ initialProgram }: { initialProgram: TourProgram }) {
+
+interface Props {
+    initialProgram: TourProgram | null;
+    programId: string;
+}
+
+export default function TourProgramClientPage({ initialProgram, programId }: Props) {
     const { toast } = useToast();
     
     const [localProgram, setLocalProgram] = useState<TourProgram | null>(initialProgram);
@@ -286,12 +291,11 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!initialProgram && localProgram?.id) {
+        if (!initialProgram && programId) {
              setLoading(true);
              const fetchProgram = async () => {
                  try {
-                    // This is a placeholder, in a real app you'd fetch from your service
-                    const fetchedProgram = await new Promise<TourProgram | null>((resolve) => setTimeout(() => resolve(initialProgram), 1000));
+                    const fetchedProgram = await getTourProgram(programId);
                     if (fetchedProgram) {
                         setLocalProgram(fetchedProgram);
                     } else {
@@ -304,12 +308,8 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
                  }
              }
              fetchProgram();
-        } else {
-            setLocalProgram(initialProgram);
-            setLoading(false);
         }
-
-    }, [initialProgram, localProgram?.id]);
+    }, [initialProgram, programId]);
 
 
     useEffect(() => {
@@ -546,7 +546,7 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
                 <div>
                     <CardTitle>ລາຍລະອຽດໂປຣແກຣມ ແລະ ຂໍ້ມູນກຸ່ມ</CardTitle>
                     <CardDescription>
-                        ວັນທີສ້າງ: {localProgram.createdAt ? format(localProgram.createdAt, "PPP", {locale: lo}) : '-'}
+                        ວັນທີສ້າງ: {localProgram.createdAt ? format(localProgram.createdAt, "PPP") : '-'}
                         {isSaving && <span className="ml-4 text-blue-500 animate-pulse">ກຳລັງບັນທຶກ...</span>}
                     </CardDescription>
                 </div>
@@ -756,7 +756,7 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
               <Card className="print:hidden">
                   <CardHeader>
                       <CardTitle>ສະຫຼຸບຜົນປະກອບການ</CardTitle>
-                      <CardDescription>ສະຫຼຸບລາຍຮັບ, ຕົ້ນທຶນ, และกำไร/ขาดทุน สำหรับໂປຣແກຣມນີ້</CardDescription>
+                      <CardDescription>ສະຫຼຸບລາຍຮັບ, ຕົ້ນທຶນ, ແລະกำไร/ขาดทุน สำหรับໂປຣແກຣມນີ້</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6 print:p-0 print:space-y-2">
                        <div>
@@ -875,3 +875,6 @@ export default function TourProgramClientPage({ initialProgram }: { initialProgr
     </div>
   )
 }
+
+    
+    

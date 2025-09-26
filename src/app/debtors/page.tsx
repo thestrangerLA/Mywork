@@ -366,3 +366,6 @@ export default function DebtorsPage() {
         </div>
     );
 }
+
+    
+    
