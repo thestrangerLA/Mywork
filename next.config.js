@@ -3,7 +3,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/Mywork',
+  basePath: '/tee',
   trailingSlash: true,
   images: {
     unoptimized: true

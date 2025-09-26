@@ -176,63 +176,52 @@ export const updateStockQuantity = async (id: string, change: number, type: 'sto
 };
 
 export const deleteMeatStockLog = async (logId: string, itemId: string) => {
-    await runTransaction(db, async (transaction) => {
-        const logDocRef = doc(db, 'meatStockLogs', logId);
-        const itemDocRef = doc(db, 'meatStockItems', itemId);
-        
+     return runTransaction(db, async (transaction) => {
+        const logDocRef = doc(meatStockLogCollectionRef, logId);
         const logDoc = await transaction.get(logDocRef);
         if (!logDoc.exists()) {
-            throw new Error("Log entry not found.");
+            throw "Log entry not found.";
         }
 
-        const itemDoc = await transaction.get(itemDocRef);
-        if (!itemDoc.exists()) {
-             throw new Error("Stock Item not found.");
-        }
+        const itemDocRef = doc(meatStockCollectionRef, itemId);
+        const logData = logDoc.data();
+        const changeToReverse = -logData.change;
 
-        const logToDelete = logDoc.data() as MeatStockLog;
-        const changeToReverse = -logToDelete.change; 
-
-        // Update the item's stock
+        // Update the item's stock level.
         transaction.update(itemDocRef, { currentStock: increment(changeToReverse) });
-        
-        // Delete the log
+
+        // Now, delete the log entry.
         transaction.delete(logDocRef);
     });
 };
 
 export const updateMeatStockLog = async (logId: string, itemId: string, updates: { change: number, detail: string }) => {
-    await runTransaction(db, async (transaction) => {
-        const logDocRef = doc(db, 'meatStockLogs', logId);
-        const itemDocRef = doc(db, 'meatStockItems', itemId);
+     return runTransaction(db, async (transaction) => {
+        const logDocRef = doc(meatStockLogCollectionRef, logId);
+        const itemDocRef = doc(meatStockCollectionRef, itemId);
 
         const logDoc = await transaction.get(logDocRef);
         if (!logDoc.exists()) {
-            throw new Error("Log entry not found.");
+            throw "Log entry not found.";
         }
 
-        const itemDoc = await transaction.get(itemDocRef);
-        if (!itemDoc.exists()) {
-            throw new Error("Stock Item not found.");
-        }
-        
-        const originalLog = logDoc.data() as MeatStockLog;
+        const originalLog = logDoc.data();
         const oldChange = originalLog.change;
         
-        // Ensure sale is negative and stock-in is positive
-        const newChange = originalLog.type === 'sale' ? -Math.abs(updates.change) : Math.abs(updates.change);
+        const newChangeValue = originalLog.type === 'sale' 
+            ? -Math.abs(updates.change) 
+            : Math.abs(updates.change);
         
-        const difference = newChange - oldChange;
+        const difference = newChangeValue - oldChange;
 
-        if (difference !== 0) {
-            transaction.update(itemDocRef, { currentStock: increment(difference) });
-        }
-        
+        // Update the item stock with the difference.
+        transaction.update(itemDocRef, { currentStock: increment(difference) });
+
+        // Update the log entry with the new values.
         transaction.update(logDocRef, { 
-            change: newChange, 
+            change: newChangeValue,
             detail: updates.detail,
-            // newStock is now just informational and doesn't need to be perfectly in sync for calculations
-            newStock: increment(difference) 
+            newStock: increment(difference) // newStock in the log is also adjusted by the difference.
         });
     });
 };

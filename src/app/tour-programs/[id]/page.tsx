@@ -16,7 +16,7 @@ export async function generateStaticParams() {
   } catch (error) {
     console.error("Failed to generate static params:", error);
     // Return a default or empty array to prevent build failure
-    return [];
+    return [{ id: 'default' }];
   }
 }
 
